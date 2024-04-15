@@ -13,6 +13,7 @@ export class TaggingQ extends DDD {
     this.title = "What color is the background?"
     this.questions = ["ex1", "ex2", "ex3"];
     this.answers = [];
+    this.draggedIndex;
   }
 
   static get styles() {
@@ -88,35 +89,34 @@ export class TaggingQ extends DDD {
 
   }
 
-allowDrop(e) {
-    e.preventDefault();
-}
+  allowDrop(e) {
+      e.preventDefault();
+  }
 
-drag(index) {
-    this.draggedItemIndex = index;
-}
+  drag(index) {
+      this.draggedIndex = index;
+  }
 
-drop(e, target) {
-    e.preventDefault();
-    const index = this.draggedItemIndex;
+  drop(e, target) {
+      e.preventDefault();
+      const index = this.draggedIndex;
 
-    if (!index && index !== 0) return;
+      if (!index && index !== 0) return;
 
-    if (target === 'input-area') {
-        if (!this.answers.includes(this.questions[index]) && this.questions[index] == '') {
-            this.answers.push(this.questions[index]);
-            this.questions.splice(index, 1);
-        }
-    } else if (target === 'question-box') {
-        if (!this.questions.includes(this.answers[index]) && this.answers[index] == '') {
-            this.questions.push(this.answers[index]);
-            this.answers.splice(index, 1);
-        }
-    }
+      if (target === 'input-area') {
+          if (!this.answers.includes(this.questions[index]) && this.questions[index] == '') {
+              this.answers.push(this.questions[index]);
+              this.questions.splice(index, 1);
+          }
+      } else if (target === 'question-box') {
+          if (!this.questions.includes(this.answers[index]) && this.answers[index] == '') {
+              this.questions.push(this.answers[index]);
+              this.answers.splice(index, 1);
+          }
+      }
 
-    this.requestUpdate();
-}
-
+      this.requestUpdate();
+  }
 
   render() {
 
@@ -156,6 +156,7 @@ drop(e, target) {
         title: { type: String, reflect: true},
         questions: { type: Array, reflect: true },
         answers: { type: Array, reflect: true },
+        draggedIndex: { type: Number, reflect: true },
     };
   }
 }
