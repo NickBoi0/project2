@@ -11,9 +11,10 @@ export class TaggingQ extends DDD {
   constructor() {
     super();
     this.title = "What color is the background?"
-    this.questions = ["ex1", "ex2", "ex3"];
+    this.questions = ["red", "blue", "green"];
     this.answers = [];
     this.draggedIndex;
+    this.draggedFrom;
   }
 
   static get styles() {
@@ -93,25 +94,23 @@ export class TaggingQ extends DDD {
       e.preventDefault();
   }
 
-  drag(index) {
+  drag(index, origin) {
       this.draggedIndex = index;
+      this.draggedFrom = origin;
   }
 
   drop(e, target) {
       e.preventDefault();
-      const index = this.draggedIndex;
-
-      if (!index && index !== 0) return;
 
       if (target === 'input-area') {
-          if (!this.answers.includes(this.questions[index]) && this.questions[index] == '') {
-              this.answers.push(this.questions[index]);
-              this.questions.splice(index, 1);
+          if (this.draggedFrom != 'input-area') {
+              this.answers.push(this.questions[this.draggedIndex]);
+              this.questions.splice(this.draggedIndex, 1);
           }
       } else if (target === 'question-box') {
-          if (!this.questions.includes(this.answers[index]) && this.answers[index] == '') {
-              this.questions.push(this.answers[index]);
-              this.answers.splice(index, 1);
+          if (this.draggedFrom != 'question-box') {
+              this.questions.push(this.answers[this.draggedIndex]);
+              this.answers.splice(this.draggedIndex, 1);
           }
       }
 
@@ -129,7 +128,7 @@ export class TaggingQ extends DDD {
                     ${this.answers.map((answer, index) => html`
 
                     <div class="answers-wrapper">
-                        <div class="answers" draggable="true" @dragstart="${() => this.drag(index)}">${answer}</div>
+                        <div class="answers" draggable="true" @dragstart="${() => this.drag(index, 'input-area')}">${answer}</div>
                     </div>
                     `)}
                 </div>
@@ -139,7 +138,7 @@ export class TaggingQ extends DDD {
                 ${this.questions.map((question, index) => html`
 
                     <div class="choices-wrapper">
-                        <div class="choices" draggable="true" @dragstart="${() => this.drag(index)}">${question}</div>
+                        <div class="choices" draggable="true" @dragstart="${() => this.drag(index, 'question-box')}">${question}</div>
                     </div>
 
                 `)}
@@ -157,6 +156,7 @@ export class TaggingQ extends DDD {
         questions: { type: Array, reflect: true },
         answers: { type: Array, reflect: true },
         draggedIndex: { type: Number, reflect: true },
+        draggedFrom: { type: String, reflect: true},
     };
   }
 }
