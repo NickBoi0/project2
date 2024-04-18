@@ -1,0 +1,41 @@
+{
+    "title": "What big ideas would YOU associate with this artistic work?",
+    "questions": [
+      {
+        "answer": "good form",
+        "correct": true,
+        "feedback": "The shape of the vase clearly demonstrates craftsmanship."
+      },
+      {
+        "answer": "poor taste",
+        "correct": false,
+        "feedback": "Taste is subjective."
+      },
+      {
+        "answer": "contrasting themes",
+        "correct": false,
+        "feedback": "There is uniformity in the shape, but there is no contrasting theme."
+      },
+      {
+        "answer": "AI",
+        "correct": true,
+        "feedback": "While a modification of prior work, this is still AI generative work."
+      },
+      {
+        "answer": "shading",
+        "correct": false,
+        "feedback": "Shading is typically used in pencil-based sketching."
+      },
+      {
+        "answer": "original work",
+        "correct": true,
+        "feedback": "This character is not based on any person, place, or existing trope."
+      },
+      {
+        "answer": "accessible",
+        "correct": false,
+        "feedback": "The color scheme lacks consistency and has unrelated text."
+      }
+    ]
+  }
+  

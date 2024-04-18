@@ -10,8 +10,8 @@ export class TaggingQ extends DDD {
 
   constructor() {
     super();
-    this.title = "What color is the background?"
-    this.questions = ["red", "blue", "green"];
+    this.title = ""
+    this.questions = ["1","2","3"];
     this.answers = [];
     this.draggedIndex;
     this.draggedFrom;
@@ -50,13 +50,16 @@ export class TaggingQ extends DDD {
         font-family: "Press Start 2P", system-ui;
       }
 
-      .input-area {
+      .question-box,
+      .answer-box {
         text-align: left;
         font-size: 30px;
         font-family: "Press Start 2P", system-ui;
         overflow-wrap: break-word;
         margin: var(--ddd-spacing-3);
+      }
 
+      .answer-box {
         padding: var(--ddd-spacing-2);
         color: var(--ddd-theme-default-opportunityGreen);
         background-color: var(--ddd-theme-default-futureLime);
@@ -65,10 +68,13 @@ export class TaggingQ extends DDD {
 
       .question-box {
         margin-top: var(--ddd-spacing-20);
-        border: black 2px solid;
         padding: var(--ddd-spacing-4);
+        color: var(--ddd-theme-default-error);
+        background-color: var(--ddd-theme-default-roarGolden);
+        border: var(--ddd-theme-default-error) 5px dashed;
       }
 
+      .answers-wrapper,
       .choices-wrapper {
         display: flex;
         margin: 8px;
@@ -76,6 +82,7 @@ export class TaggingQ extends DDD {
         align-items: top; 
       }
 
+      .answers,
       .choices {
         display: flex;
         font-size: 15px;
@@ -87,7 +94,7 @@ export class TaggingQ extends DDD {
   }
 
   firstUpdated() {
-
+    this.createQuestion();
   }
 
   allowDrop(e) {
@@ -102,8 +109,8 @@ export class TaggingQ extends DDD {
   drop(e, target) {
       e.preventDefault();
 
-      if (target === 'input-area') {
-          if (this.draggedFrom != 'input-area') {
+      if (target === 'answer-box') {
+          if (this.draggedFrom != 'answer-box') {
               this.answers.push(this.questions[this.draggedIndex]);
               this.questions.splice(this.draggedIndex, 1);
           }
@@ -117,38 +124,51 @@ export class TaggingQ extends DDD {
       this.requestUpdate();
   }
 
-  render() {
-
-    return html`
-        <div class="project2">
-            <div class="background">
-                <div class="question-heading">Question: ${this.title}</div>
-
-                <div class="input-area" @drop="${(e) => this.drop(e, 'input-area')}" @dragover="${this.allowDrop}">Drag and Drop Answer
-                    ${this.answers.map((answer, index) => html`
-
-                    <div class="answers-wrapper">
-                        <div class="answers" draggable="true" @dragstart="${() => this.drag(index, 'input-area')}">${answer}</div>
-                    </div>
-                    `)}
-                </div>
-
-                <div class="question-box" @drop="${(e) => this.drop(e, 'question-box')}" @dragover="${this.allowDrop}">
-
-                ${this.questions.map((question, index) => html`
-
-                    <div class="choices-wrapper">
-                        <div class="choices" draggable="true" @dragstart="${() => this.drag(index, 'question-box')}">${question}</div>
-                    </div>
-
-                `)}
-
-                </div>
-            </div>
-        </div>
-    `;
+  createQuestion() {
+    fetch("questions.json")
+        .then(d => d.json())
+        .then(data => {
+            this.title = data.title;
+            this.questions = data.questions.map(question => question.answer);
+            this.answers = data.questions.map(question => question.answer);
+        })
+        .catch(error => {
+            // window.alert(error);
+        });
 }
 
+  
+render() {
+
+  return html`
+      <div class="project2">
+          <div class="background">
+              <div class="question-heading">Question: ${this.title}</div>
+
+              <div class="answer-box" @drop="${(e) => this.drop(e, 'answer-box')}" @dragover="${this.allowDrop}">Drag and Drop Answer
+                  ${this.answers.map((answer, index) => html`
+
+                  <div class="answers-wrapper">
+                      <div class="answers" draggable="true" @dragstart="${() => this.drag(index, 'answer-box')}">${answer}</div>
+                  </div>
+                  `)}
+              </div>
+
+              <div class="question-box" @drop="${(e) => this.drop(e, 'question-box')}" @dragover="${this.allowDrop}">
+
+              ${this.questions.map((question, index) => html`
+
+                  <div class="choices-wrapper">
+                      <div class="choices" draggable="true" @dragstart="${() => this.drag(index, 'question-box')}">${question}</div>
+                  </div>
+
+              `)}
+
+              </div>
+          </div>
+      </div>
+  `;
+}
 
   static get properties() {
     return {
