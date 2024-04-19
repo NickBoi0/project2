@@ -11,10 +11,12 @@ export class TaggingQ extends DDD {
   constructor() {
     super();
     this.title = "What color is the sky?"
-    this.questions = ["blue", "red", "green", "purple"];
+    this.questions = ["blue", "red", "green", "purple", "yellow", "black", "white", "pink"];
     this.answers = [];
     this.draggedIndex;
     this.draggedFrom;
+    this.hintText = "Drag and Drop Answer(s)";
+    this.rotation = -5;
   }
 
   static get styles() {
@@ -31,8 +33,8 @@ export class TaggingQ extends DDD {
       .background {
         background-color: var(--ddd-theme-default-beaverBlue);
         padding: var(--ddd-spacing-4);
-        height: 525px;
-        width: 975px;
+        height: 625px;
+        width: 1075px;
         display: flex;
         border: var(--ddd-theme-default-nittanyNavy) 20px outset;
         flex-direction: column;
@@ -51,31 +53,51 @@ export class TaggingQ extends DDD {
 
       .question-box,
       .answer-box {
-        text-align: left;
         font-size: 30px;
         font-family: "Press Start 2P", system-ui;
         overflow-wrap: break-word;
+
         margin: var(--ddd-spacing-3);
+        padding: var(--ddd-spacing-4);
+
         width: 900px;
         height: 200px;
 
         display: flex;
         flex-wrap: wrap;
+
+        animation: border-animation 5s infinite linear;
       }
 
       .answer-box {
+        position: left top, right bottom, left bottom, right top;
         padding: var(--ddd-spacing-4);
         color: var(--ddd-theme-default-opportunityGreen);
+
+        background: linear-gradient(90deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%),
+                    linear-gradient(90deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%), 
+                    linear-gradient(0deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%), 
+                    linear-gradient(0deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%);
         background-color: var(--ddd-theme-default-futureLime);
-        border: var(--ddd-theme-default-opportunityGreen) 5px dashed;
+                    
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 50px 15px, 50px 15px, 15px 50px, 15px 50px;
+        background-position: left top, right bottom, left bottom, right top;
       }
 
       .question-box {
         margin-top: var(--ddd-spacing-20);
-        padding: var(--ddd-spacing-4);
         color: var(--ddd-theme-default-error);
+
+        background: linear-gradient(90deg, var(--ddd-theme-default-error) 50%, transparent 50%),
+                    linear-gradient(90deg, var(--ddd-theme-default-error) 50%, transparent 50%), 
+                    linear-gradient(0deg, var(--ddd-theme-default-error) 50%, transparent 50%), 
+                    linear-gradient(0deg, var(--ddd-theme-default-error) 50%, transparent 50%);
         background-color: var(--ddd-theme-default-roarGolden);
-        border: var(--ddd-theme-default-error) 5px dashed;
+
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 50px 15px, 50px 15px, 15px 50px, 15px 50px;
+        background-position: left top, right bottom, left bottom, right top;
       }
 
       .answers-wrapper,
@@ -90,26 +112,29 @@ export class TaggingQ extends DDD {
         padding: var(--ddd-spacing-2);
         border: white 5px solid;
         color: white;
-      }
 
-      .answers:hover,
-      .choices:hover {
-        border-color: pink;
-        color: pink;
+        transition: transform .2s linear;
       }
 
       .answer-box.hovered,
       .question-box.hovered {
-        border: pink 5px dashed;
-        color: pink;
+        animation: border-animation .5s infinite linear;
       }
 
       .answers:focus,
       .answers:hover,
       .choices:focus,
       .choices:hover{
-        border: pink 5px solid;
-        color: pink;
+        transform: rotate(5deg);
+      }
+
+      @keyframes border-animation {
+        0% {
+          background-position: left top, right bottom, left bottom, right top;
+        }
+        100% {
+          background-position: left 100px top, right 100px bottom, left bottom 100px, right top 100px;
+        }
       }
     `;
   }
@@ -170,6 +195,17 @@ export class TaggingQ extends DDD {
         this.answers.splice(this.draggedIndex, 1);
       }
     }
+    this.hintTextCheck();
+
+    this.requestUpdate();
+  }
+
+  hintTextCheck() {
+    if (this.answers == '') {
+      this.hintText = "Drag and Drop Answer(s)";
+    } else {
+      this.hintText = "";
+    }
 
     this.requestUpdate();
   }
@@ -179,14 +215,14 @@ export class TaggingQ extends DDD {
       <div class="project2">
         <div class="background">
           <div class="question-heading">Question: ${this.title}</div>
-          <div class="answer-box">
-            Drag and Drop Answer
-            ${this.answers.map((answer, index) => html`
-              <div class="answers-wrapper">
-                <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
-              </div>
-            `)}
-          </div>
+            <div class="answer-box">
+              ${this.hintText}
+              ${this.answers.map((answer, index) => html`
+                <div class="answers-wrapper">
+                  <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
+                </div>
+              `)}
+            </div>
           <div class="question-box">
             ${this.questions.map((question, index) => html`
               <div class="choices-wrapper">
@@ -207,6 +243,8 @@ export class TaggingQ extends DDD {
         answers: { type: Array, reflect: true },
         draggedIndex: { type: Number, reflect: true },
         draggedFrom: { type: String, reflect: true},
+        hintText: { type: String, reflect: true},
+        rotation: { type: Number, reflect: true },
     };
   }
 }
