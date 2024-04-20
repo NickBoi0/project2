@@ -42,7 +42,9 @@ export class TaggingQ extends DDD {
       }
 
       .question-heading,
-      .choices {
+      .choices,
+      .clear-btn,
+      .check-btn {
         text-align: left;
         background: transparent;
         border: transparent;
@@ -51,17 +53,22 @@ export class TaggingQ extends DDD {
         font-family: "Press Start 2P", system-ui;
       }
 
+      .answer-section {
+        display: flex;
+      }
+
       .question-box,
       .answer-box {
         font-size: 30px;
         font-family: "Press Start 2P", system-ui;
         overflow-wrap: break-word;
+        overflow: hidden;
 
         margin: var(--ddd-spacing-3);
         padding: var(--ddd-spacing-4);
 
         width: 900px;
-        height: 200px;
+        height: 150px;
 
         display: flex;
         flex-wrap: wrap;
@@ -83,6 +90,12 @@ export class TaggingQ extends DDD {
         background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
         background-size: 50px 15px, 50px 15px, 15px 50px, 15px 50px;
         background-position: left top, right bottom, left bottom, right top;
+      }
+
+      .btn-wrapper {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
       }
 
       .question-box {
@@ -126,6 +139,57 @@ export class TaggingQ extends DDD {
       .choices:focus,
       .choices:hover{
         transform: rotate(5deg);
+      }
+
+      .clear-btn,
+      .check-btn {
+        text-shadow: 1px 1px black, -1px -1px black;
+
+        line-height: 1.5em;
+        text-align: center;
+        display: inline-block;
+        width: 1.5em;
+        -webkit-border-radius: .75em;
+        -moz-border-radius: .75em;
+        -o-border-radius: .75em;
+          border-radius: .75em;
+        background-color: red;
+        -webkit-box-shadow:  0 .2em maroon;
+        -moz-box-shadow:  0 .2em maroon;
+        -o-box-shadow:  0 .2em maroon;
+        box-shadow:  0 .2em maroon;
+        color: white;
+        margin: var(--ddd-spacing-2);
+        background-color: red;
+        background-image: -o-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+        background-image: -moz-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+        background-image: -webkit-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+        background-image: linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+        cursor: pointer;
+        padding: var(--ddd-spacing-2);
+
+        transition: .3s linear;
+      }
+
+      .clear-btn:focus,
+      .clear-btn:hover,
+      .check-btn:focus,
+      .check-btn:hover {
+        background-image: -o-linear-gradient(left top, red 3%, darkred 22%, black 99%);
+        background-image: -moz-linear-gradient(left top, red 3%, darkred 22%, black 99%);
+        background-image: -webkit-linear-gradient(left top, red 3%, darkred 22%, black 99%);
+        background-image: linear-gradient(left top, red 3%, darkred 22%, black 99%);
+
+        -webkit-box-shadow:  0 .2em black;
+        -moz-box-shadow:  0 .2em black;
+        -o-box-shadow:  0 .2em black;
+        box-shadow:  0 .2em black;
+      }
+
+      .clear-btn:active, .check-btn:active {
+        box-shadow: none;
+        position: relative;
+        top: .2em;
       }
 
       @keyframes border-animation {
@@ -210,18 +274,44 @@ export class TaggingQ extends DDD {
     this.requestUpdate();
   }
 
+  clear() {
+    if (this.answers != '') {
+
+      this.answers.forEach(answer => {
+        this.questions.push(answer);
+      });
+
+      this.answers = [];
+      
+    }
+    this.requestUpdate();
+  }
+
+  check() {
+    if (this.answers != '') {
+      
+    }
+    this.requestUpdate();
+  }
+
   render() {
     return html`
       <div class="project2">
         <div class="background">
           <div class="question-heading">Question: ${this.title}</div>
-            <div class="answer-box">
-              ${this.hintText}
-              ${this.answers.map((answer, index) => html`
-                <div class="answers-wrapper">
-                  <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
-                </div>
-              `)}
+            <div class="answer-section">
+              <div class="answer-box">
+                ${this.hintText}
+                ${this.answers.map((answer, index) => html`
+                  <div class="answers-wrapper">
+                    <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
+                  </div>
+                `)}
+              </div>
+              <div class="btn-wrapper">
+                <button @click="${this.clear}" class="clear-btn">X</button>
+                <button @click="${this.check}" class="check-btn">✔</button>
+              </div>
             </div>
           <div class="question-box">
             ${this.questions.map((question, index) => html`
