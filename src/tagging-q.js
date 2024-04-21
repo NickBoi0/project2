@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { DDD } from "@lrnwebcomponents/d-d-d/d-d-d.js";
 import "@lrnwebcomponents/rpg-character/rpg-character.js";
+import "@lrnwebcomponents/type-writer/type-writer.js";
 
 export class TaggingQ extends DDD {
 
@@ -10,7 +11,8 @@ export class TaggingQ extends DDD {
 
   constructor() {
     super();
-    this.title = "What color is the sky?"
+    this.img = "https://t4.ftcdn.net/jpg/06/06/54/49/360_F_606544986_2zeORxAa7x0pnUdfXNlBZof4QOB7qB43.jpg";
+    this.teacherText = "What color is the sky?"
     this.questions = ["blue", "red", "green", "purple", "yellow", "black", "white", "pink"];
     this.answers = [];
     this.draggedIndex;
@@ -25,23 +27,57 @@ export class TaggingQ extends DDD {
 
       :host {
         display: flex;
-        justify-content: center; 
-        align-items: center; 
-        height: 100vh;
-      }
-
-      .background {
+        justify-content: left; 
+        align-items: left; 
         background-color: var(--ddd-theme-default-beaverBlue);
-        padding: var(--ddd-spacing-4);
-        height: 625px;
-        width: 1075px;
-        display: flex;
         border: var(--ddd-theme-default-nittanyNavy) 20px outset;
-        flex-direction: column;
-        overflow: hidden;
+        padding: var(--ddd-spacing-3);
       }
 
-      .question-heading,
+      .question-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .question-img {
+        border: black 5px solid;
+        margin-bottom: var(--ddd-spacing-3);
+      }
+
+      .teacher-wrapper {
+        padding: var(--ddd-spacing-2);
+        display: flex;
+        justify-content: right;
+        align-items: right;
+      }
+
+      .speech-bubble {
+        position: relative;
+        background-color: white;
+        border-radius: 10px;
+        padding: var(--ddd-spacing-2);
+
+        width: 600px;
+      }
+
+      .speech-bubble:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 100%;
+          margin-top: -10px;
+          border-width: 10px;
+          border-style: solid;
+          border-color: transparent;
+          border-left-color: white; 
+      }
+
+      .character-wrapper {
+        padding: var(--ddd-spacing-2);
+      }
+
+      .teacher-words,
       .choices,
       .clear-btn,
       .check-btn {
@@ -51,6 +87,10 @@ export class TaggingQ extends DDD {
         color: white;
         font-size: 30px;
         font-family: "Press Start 2P", system-ui;
+      }
+
+      .teacher-words {
+        color: black;
       }
 
       .answer-section {
@@ -80,6 +120,7 @@ export class TaggingQ extends DDD {
         position: left top, right bottom, left bottom, right top;
         padding: var(--ddd-spacing-4);
         color: var(--ddd-theme-default-opportunityGreen);
+        border: var(--ddd-theme-default-opportunityGreen) 2px solid;
 
         background: linear-gradient(90deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%),
                     linear-gradient(90deg, var(--ddd-theme-default-opportunityGreen) 50%, transparent 50%), 
@@ -99,8 +140,9 @@ export class TaggingQ extends DDD {
       }
 
       .question-box {
-        margin-top: var(--ddd-spacing-20);
+        margin-top: var(--ddd-spacing-5);
         color: var(--ddd-theme-default-error);
+        border: var(--ddd-theme-default-error) 2px solid;
 
         background: linear-gradient(90deg, var(--ddd-theme-default-error) 50%, transparent 50%),
                     linear-gradient(90deg, var(--ddd-theme-default-error) 50%, transparent 50%), 
@@ -143,47 +185,27 @@ export class TaggingQ extends DDD {
 
       .clear-btn,
       .check-btn {
-        text-shadow: 1px 1px black, -1px -1px black;
-
-        line-height: 1.5em;
         text-align: center;
-        display: inline-block;
-        width: 1.5em;
-        -webkit-border-radius: .75em;
-        -moz-border-radius: .75em;
-        -o-border-radius: .75em;
-          border-radius: .75em;
-        background-color: red;
-        -webkit-box-shadow:  0 .2em maroon;
-        -moz-box-shadow:  0 .2em maroon;
-        -o-box-shadow:  0 .2em maroon;
-        box-shadow:  0 .2em maroon;
-        color: white;
-        margin: var(--ddd-spacing-2);
-        background-color: red;
-        background-image: -o-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
-        background-image: -moz-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
-        background-image: -webkit-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
-        background-image: linear-gradient(left top, pink 3%, red 22%, maroon 99%);
-        cursor: pointer;
-        padding: var(--ddd-spacing-2);
+        
+        margin: var(--ddd-spacing-1);
+        font-weight: bold;
+        padding: var(--ddd-spacing-5);
+        background-color: lightgray;
+        text-shadow: -1px -1px black, 1px 1px white;
+        color: gray;
 
-        transition: .3s linear;
+        border-radius: var(--ddd-spacing-2);
+        box-shadow: 0 .2em gray; 
+        cursor: pointer;
+
+        transition: background-color .2s linear;
       }
 
       .clear-btn:focus,
       .clear-btn:hover,
       .check-btn:focus,
       .check-btn:hover {
-        background-image: -o-linear-gradient(left top, red 3%, darkred 22%, black 99%);
-        background-image: -moz-linear-gradient(left top, red 3%, darkred 22%, black 99%);
-        background-image: -webkit-linear-gradient(left top, red 3%, darkred 22%, black 99%);
-        background-image: linear-gradient(left top, red 3%, darkred 22%, black 99%);
-
-        -webkit-box-shadow:  0 .2em black;
-        -moz-box-shadow:  0 .2em black;
-        -o-box-shadow:  0 .2em black;
-        box-shadow:  0 .2em black;
+        background-color: #ababab;
       }
 
       .clear-btn:active, .check-btn:active {
@@ -200,6 +222,7 @@ export class TaggingQ extends DDD {
           background-position: left 100px top, right 100px bottom, left bottom 100px, right top 100px;
         }
       }
+
     `;
   }
 
@@ -225,6 +248,33 @@ export class TaggingQ extends DDD {
     });
   }
 
+  createQuestion() {
+    fetch('questions.json')
+        .then(response => response.json())
+        .then(data => {
+            this.title = data.title;
+            this.questions = data.questions.map(question => question.answer);
+            this.answers = data.questions.map(question => question.answer);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+  }
+
+  makeItRain() {
+
+    const success = new Audio('https://hax.psu.edu/cdn/1.x.x/build/es6/node_modules/@lrnwebcomponents/app-hax/lib/assets/sounds/success.mp3');
+    success.play();
+
+    import("@lrnwebcomponents/multiple-choice/lib/confetti-container.js").then(
+      (module) => {
+        setTimeout(() => {
+          this.shadowRoot.querySelector("#confetti").setAttribute("popped", "");
+        }, 0);
+      }
+    );
+  }
+
   dragOver(e) {
     e.preventDefault();
   }
@@ -232,6 +282,9 @@ export class TaggingQ extends DDD {
   dragStart(e) {
     this.draggedIndex = parseInt(e.target.dataset.index);
     this.draggedFrom = e.target.dataset.origin;
+
+    const click = new Audio('https://hax.psu.edu/cdn/1.x.x/build/es6/node_modules/@lrnwebcomponents/app-hax/lib/assets/sounds/coin.mp3');
+    click.play();
   }
 
   dragEnter(e) {
@@ -246,17 +299,21 @@ export class TaggingQ extends DDD {
   drop(e, target) {
     e.preventDefault();
 
+    const bading = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_2d39932aa9.mp3');
+
     e.target.classList.remove('hovered');
 
     if (target === 'answer-box') {
       if (this.draggedFrom != 'answer-box') {
         this.answers.push(this.questions[this.draggedIndex]);
         this.questions.splice(this.draggedIndex, 1);
+        bading.play();
       }
     } else if (target === 'question-box') {
       if (this.draggedFrom != 'question-box') {
         this.questions.push(this.answers[this.draggedIndex]);
         this.answers.splice(this.draggedIndex, 1);
+        bading.play();
       }
     }
     this.hintTextCheck();
@@ -275,6 +332,9 @@ export class TaggingQ extends DDD {
   }
 
   clear() {
+
+    const explode = new Audio('https://www.myinstants.com/media/sounds/minecraft-explode1.mp3');
+
     if (this.answers != '') {
 
       this.answers.forEach(answer => {
@@ -282,6 +342,7 @@ export class TaggingQ extends DDD {
       });
 
       this.answers = [];
+      explode.play();
       
     }
     this.requestUpdate();
@@ -289,7 +350,7 @@ export class TaggingQ extends DDD {
 
   check() {
     if (this.answers != '') {
-      
+      this.makeItRain();
     }
     this.requestUpdate();
   }
@@ -297,8 +358,18 @@ export class TaggingQ extends DDD {
   render() {
     return html`
       <div class="project2">
-        <div class="background">
-          <div class="question-heading">Question: ${this.title}</div>
+        <confetti-container id="confetti">
+          <div class="question-wrapper">
+            <img class="question-img" src="${this.img}" alt="Image that relates to the question">
+            <div class="teacher-wrapper">
+              <div class="speech-bubble">
+                <type-writer class="teacher-words" delay="100" text="Question: ${this.teacherText}" erase-speed="15" speed="50"></type-writer>
+              </div>
+              <div class="character-wrapper">
+                <rpg-character seed="zpg"></rpg-character>
+              </div>
+            </div>
+          </div>
             <div class="answer-section">
               <div class="answer-box">
                 ${this.hintText}
@@ -320,7 +391,7 @@ export class TaggingQ extends DDD {
               </div>
             `)}
           </div>
-        </div>
+        </confetti-container>
       </div>
     `;
   }
@@ -328,13 +399,14 @@ export class TaggingQ extends DDD {
 
   static get properties() {
     return {
-        title: { type: String, reflect: true},
+        teacherText: { type: String, reflect: true},
         questions: { type: Array, reflect: true },
         answers: { type: Array, reflect: true },
         draggedIndex: { type: Number, reflect: true },
         draggedFrom: { type: String, reflect: true},
         hintText: { type: String, reflect: true},
         rotation: { type: Number, reflect: true },
+        img: { type: String, reflect: true},
     };
   }
 }
