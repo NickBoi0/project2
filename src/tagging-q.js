@@ -12,13 +12,13 @@ export class TaggingQ extends DDD {
   constructor() {
     super();
     this.img = "https://t4.ftcdn.net/jpg/06/06/54/49/360_F_606544986_2zeORxAa7x0pnUdfXNlBZof4QOB7qB43.jpg";
-    this.teacherText = "What color is the sky?"
-    this.questions = ["blue", "red", "green", "purple", "yellow", "black", "white", "pink"];
+    this.teacherText = "Is this a photo of the sky?";
+    this.questions = [];
     this.answers = [];
-    this.draggedIndex;
-    this.draggedFrom;
+    this.draggedIndex = null;
+    this.draggedFrom = null;
     this.hintText = "Drag and Drop Answer(s)";
-    this.rotation = -5;
+    this.answerSet = "default";
   }
 
   static get styles() {
@@ -41,7 +41,10 @@ export class TaggingQ extends DDD {
       }
 
       .question-img {
+        max-width: 500px;
+        max-height: 400px;
         border: black 5px solid;
+        border-radius: 8px;
         margin-bottom: var(--ddd-spacing-3);
       }
 
@@ -62,15 +65,15 @@ export class TaggingQ extends DDD {
       }
 
       .speech-bubble:after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 100%;
-          margin-top: -10px;
-          border-width: 10px;
-          border-style: solid;
-          border-color: transparent;
-          border-left-color: white; 
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        margin-top: -10px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent;
+        border-left-color: white; 
       }
 
       .character-wrapper {
@@ -162,9 +165,10 @@ export class TaggingQ extends DDD {
 
       .answers,
       .choices {
-        font-size: 25px;
+        font-family: "Press Start 2P", system-ui;
+        font-size: 20px;
         background-color: black;
-        padding: var(--ddd-spacing-2);
+        padding: var(--ddd-spacing-1);
         border: white 5px solid;
         color: white;
 
@@ -246,21 +250,43 @@ export class TaggingQ extends DDD {
       questionBox.addEventListener('dragleave', (e) => this.dragLeave(e));
       questionBox.addEventListener('drop', (e) => this.drop(e, 'question-box'));
     });
+
+    this.getData();
   }
 
-  createQuestion() {
-    fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            this.title = data.title;
-            this.questions = data.questions.map(question => question.answer);
-            this.answers = data.questions.map(question => question.answer);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
+  getData() {
+
+    fetch('src/questions.json')
+      .then((response) => response.json())
+      .then((json) => {
+        const possibleQuestions = json[this.answerSet];
+
+        this.questions = [];
+        const tags = [];
+        for (const key in possibleQuestions) {
+          const option = possibleQuestions[key];
+          const choice = document.createElement('choices');
+          choice.textContent = key;
+          choice.dataset.correct = option.correct;
+          choice.dataset.feedback = option.feedback;
+          tags.push(choice);
+        }
+
+        tags.forEach(choice => {
+          this.questions.push(choice);
         });
+
+        this.shuffle();
+    });
   }
 
+  shuffle() {
+    for (let i = this.questions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.questions[i], this.questions[j]] = [this.questions[j], this.questions[i]];
+    }
+  }
+  
   makeItRain() {
 
     const success = new Audio('https://hax.psu.edu/cdn/1.x.x/build/es6/node_modules/@lrnwebcomponents/app-hax/lib/assets/sounds/success.mp3');
@@ -296,9 +322,14 @@ export class TaggingQ extends DDD {
     e.target.classList.remove('hovered');
   }
 
-  drop(e, target) {
+  drop(e, target, index, from) {
     e.preventDefault();
 
+    if (this.draggedIndex == null && this.draggedFrom == null) {
+      this.draggedIndex = index;
+      this.draggedFrom = from;
+    }
+    
     const bading = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_2d39932aa9.mp3');
 
     e.target.classList.remove('hovered');
@@ -317,7 +348,8 @@ export class TaggingQ extends DDD {
       }
     }
     this.hintTextCheck();
-
+    this.draggedIndex = null;
+    this.draggedFrom = null;
     this.requestUpdate();
   }
 
@@ -345,20 +377,34 @@ export class TaggingQ extends DDD {
       explode.play();
       
     }
+    this.shuffle();
     this.requestUpdate();
   }
 
   check() {
-    if (this.answers != '') {
-      this.makeItRain();
-    }
-    this.requestUpdate();
+    // let allCorrect = true;
+
+    // this.answers.forEach((answer, index) => {
+    //   const questionIndex = this.draggedIndex;
+    //   const choiceIndex = this.questions[questionIndex].indexOf(answer);
+
+    //   if (choiceIndex !== -1) {
+    //     const correct = json[this.answerSet][this.questions[questionIndex]][answer].correct;
+    //     if (!correct) {
+    //       allCorrect = false;
+    //     }
+    //   }
+    // });
+
+    // if (allCorrect) {
+    //   this.makeItRain();
+    // } 
   }
 
   render() {
     return html`
-      <div class="project2">
-        <confetti-container id="confetti">
+    <confetti-container id="confetti">
+        <div class="project2">
           <div class="question-wrapper">
             <img class="question-img" src="${this.img}" alt="Image that relates to the question">
             <div class="teacher-wrapper">
@@ -370,29 +416,29 @@ export class TaggingQ extends DDD {
               </div>
             </div>
           </div>
-            <div class="answer-section">
-              <div class="answer-box">
-                ${this.hintText}
-                ${this.answers.map((answer, index) => html`
-                  <div class="answers-wrapper">
-                    <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
-                  </div>
-                `)}
-              </div>
-              <div class="btn-wrapper">
-                <button @click="${this.clear}" class="clear-btn">X</button>
-                <button @click="${this.check}" class="check-btn">✔</button>
-              </div>
+          <div class="answer-section">
+            <div class="answer-box">
+              ${this.hintText}
+              ${this.answers.map((answer, index) => html`
+                <div class="answers-wrapper">
+                  <button @click="${(e) => this.drop(e,"answer-box", index, "answer-box")}" class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</button>
+                </div>
+              `)}
             </div>
+            <div class="btn-wrapper">
+              <button @click="${this.clear}" class="clear-btn">X</button>
+              <button @click="${this.check}" class="check-btn">✔</button>
+            </div>
+          </div>
           <div class="question-box">
             ${this.questions.map((question, index) => html`
               <div class="choices-wrapper">
-                <div class="choices" draggable="true" data-index="${index}" data-origin="question-box">${question}</div>
+                <button @click="${(e) => this.drop(e,"question-box", index, "question-box")}" class="choices" draggable="true" data-index="${index}" data-origin="question-box">${question}</button>
               </div>
             `)}
           </div>
-        </confetti-container>
-      </div>
+        </div>
+      </confetti-container>
     `;
   }
 
@@ -407,6 +453,7 @@ export class TaggingQ extends DDD {
         hintText: { type: String, reflect: true},
         rotation: { type: Number, reflect: true },
         img: { type: String, reflect: true},
+        answerSet: { type: String, reflect: true},
     };
   }
 }
