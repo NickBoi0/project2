@@ -13,12 +13,14 @@ export class TaggingQ extends DDD {
     super();
     this.img = "https://t4.ftcdn.net/jpg/06/06/54/49/360_F_606544986_2zeORxAa7x0pnUdfXNlBZof4QOB7qB43.jpg";
     this.teacherText = "Is this a photo of the sky?";
+    this.questionHolder = "Is this a photo of the sky?";
     this.questions = [];
     this.answers = [];
     this.draggedIndex = null;
     this.draggedFrom = null;
     this.hintText = "Drag and Drop Answer(s)";
     this.answerSet = "default";
+    this.checkedColor = false;
   }
 
   static get styles() {
@@ -33,6 +35,10 @@ export class TaggingQ extends DDD {
         border: var(--ddd-theme-default-nittanyNavy) 20px solid;
         border-bottom: transparent;
         padding: var(--ddd-spacing-3);
+      }
+
+      :host([checkedColor]) .teacher-words {
+        color: blue;
       }
 
       .question-wrapper {
@@ -63,25 +69,29 @@ export class TaggingQ extends DDD {
         padding: var(--ddd-spacing-2);
 
         width: 600px;
-      }
+        max-height: 150px;
 
-      .speech-bubble:after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 100%;
-        margin-top: -10px;
-        border-width: 10px;
-        border-style: solid;
-        border-color: transparent;
-        border-left-color: white; 
+        text-overflow: ellipsis;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thick;
+        scrollbar-color: black lightgrey;
+    }
+
+      .bubble-point {
+        margin-top: 20px;
+        width: 0; 
+        height: 0; 
+        border-top: 60px solid transparent;
+        border-bottom: 60px solid transparent;
+        
+        border-left: 60px solid white;
       }
 
       .character-wrapper {
         padding: var(--ddd-spacing-2);
       }
 
-      .teacher-words,
       .choices,
       .clear-btn,
       .check-btn {
@@ -94,7 +104,12 @@ export class TaggingQ extends DDD {
       }
 
       .teacher-words {
+        text-align: left;
+        background: transparent;
+        border: transparent;
+        font-family: "Press Start 2P", system-ui;
         color: black;
+        font-size: 25px;
       }
 
       .answer-section {
@@ -175,6 +190,15 @@ export class TaggingQ extends DDD {
 
         transition: transform .2s linear;
       }
+
+      .correct {
+        color: green;
+      }
+
+      .incorrect {
+        color: red;
+      }
+
 
       .answer-box.hovered,
       .question-box.hovered {
@@ -265,6 +289,7 @@ export class TaggingQ extends DDD {
       questionBox.addEventListener('drop', (e) => this.drop(e, 'question-box'));
     });
 
+    this.questionHolder = this.teacherText;
     this.getData();
   }
 
@@ -388,7 +413,7 @@ export class TaggingQ extends DDD {
       });
 
       this.answers = [];
-      this.hintText = "Drag and Drop Answer(s)";
+      this.teacherText = this.questionHolder;
       explode.play();
       
     }
@@ -397,24 +422,27 @@ export class TaggingQ extends DDD {
   }
 
   check() {
-    // let allCorrect = true;
-
-    // this.answers.forEach((answer, index) => {
-    //   const questionIndex = this.draggedIndex;
-    //   const choiceIndex = this.questions[questionIndex].indexOf(answer);
-
-    //   if (choiceIndex !== -1) {
-    //     const correct = json[this.answerSet][this.questions[questionIndex]][answer].correct;
-    //     if (!correct) {
-    //       allCorrect = false;
-    //     }
-    //   }
-    // });
-
-    // if (allCorrect) {
-    //   this.makeItRain();
-    // } 
+    this.teacherText = ''; 
+    // this.checkedColor = true;
+  
+    this.answers.forEach((ans, index) => {
+      const feedback = this.answers[index].dataset.feedback;
+      let colorClass; // Declare colorClass variable outside the if-else block
+  
+      if (this.answers[index].dataset.correct == true) {
+        colorClass = 'correct'; // Set class to correct if feedback is correct
+      } else {
+        colorClass = 'incorrect'; // Set class to incorrect if feedback is incorrect
+      }
+  
+      // Append feedback with the appropriate color class
+      this.teacherText += `<span class="${colorClass}">${feedback}</span>` + '\n';
+    });
+  
+    this.requestUpdate();
   }
+  
+  
 
   render() {
     return html`
@@ -424,8 +452,9 @@ export class TaggingQ extends DDD {
             <img class="question-img" src="${this.img}" alt="Image that relates to the question">
             <div class="teacher-wrapper">
               <div class="speech-bubble">
-                <type-writer class="teacher-words" delay="100" text="Question: ${this.teacherText}" erase-speed="15" speed="50"></type-writer>
+                <type-writer class="teacher-words" delay="100" text="${this.teacherText}" erase-speed="15" speed="50"></type-writer>
               </div>
+              <div class="bubble-point"></div>
               <div class="character-wrapper">
                 <rpg-character seed="zpg"></rpg-character>
               </div>
@@ -469,6 +498,8 @@ export class TaggingQ extends DDD {
         rotation: { type: Number, reflect: true },
         img: { type: String, reflect: true},
         answerSet: { type: String, reflect: true},
+        questionHolder: { type: String, reflect: true},
+        checkedColor: { type: Boolean, reflect: true},
     };
   }
 }
