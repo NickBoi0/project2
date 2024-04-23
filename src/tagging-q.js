@@ -30,7 +30,8 @@ export class TaggingQ extends DDD {
         justify-content: left; 
         align-items: left; 
         background-color: var(--ddd-theme-default-beaverBlue);
-        border: var(--ddd-theme-default-nittanyNavy) 20px outset;
+        border: var(--ddd-theme-default-nittanyNavy) 20px solid;
+        border-bottom: transparent;
         padding: var(--ddd-spacing-3);
       }
 
@@ -185,6 +186,7 @@ export class TaggingQ extends DDD {
       .choices:focus,
       .choices:hover{
         transform: rotate(5deg);
+        cursor: pointer;
       }
 
       .clear-btn,
@@ -194,22 +196,34 @@ export class TaggingQ extends DDD {
         margin: var(--ddd-spacing-1);
         font-weight: bold;
         padding: var(--ddd-spacing-5);
-        background-color: lightgray;
-        text-shadow: -1px -1px black, 1px 1px white;
-        color: gray;
+        text-shadow: -1px -1px black, 1px 1px black;
 
         border-radius: var(--ddd-spacing-2);
-        box-shadow: 0 .2em gray; 
         cursor: pointer;
 
         transition: background-color .2s linear;
       }
 
+      .clear-btn {
+        background-color: #941400;
+        color: red;
+        box-shadow: 0 .2em #4a0a00; 
+      }
+
+      .check-btn {
+        background-color: green;
+        color: lime;
+        box-shadow: 0 .2em #00520e;
+      }
+
       .clear-btn:focus,
-      .clear-btn:hover,
+      .clear-btn:hover {
+        background-color: #690f01;
+      }
+
       .check-btn:focus,
       .check-btn:hover {
-        background-color: #ababab;
+        background-color: darkgreen;
       }
 
       .clear-btn:active, .check-btn:active {
@@ -374,6 +388,7 @@ export class TaggingQ extends DDD {
       });
 
       this.answers = [];
+      this.hintText = "Drag and Drop Answer(s)";
       explode.play();
       
     }
@@ -421,7 +436,7 @@ export class TaggingQ extends DDD {
               ${this.hintText}
               ${this.answers.map((answer, index) => html`
                 <div class="answers-wrapper">
-                  <button @click="${(e) => this.drop(e,"answer-box", index, "answer-box")}" class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</button>
+                  <button @click="${(e) => this.drop(e,"question-box", index, "answer-box")}" class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</button>
                 </div>
               `)}
             </div>
@@ -433,7 +448,7 @@ export class TaggingQ extends DDD {
           <div class="question-box">
             ${this.questions.map((question, index) => html`
               <div class="choices-wrapper">
-                <button @click="${(e) => this.drop(e,"question-box", index, "question-box")}" class="choices" draggable="true" data-index="${index}" data-origin="question-box">${question}</button>
+                <button @click="${(e) => this.drop(e,"answer-box", index, "question-box")}" class="choices" draggable="true" data-index="${index}" data-origin="question-box">${question}</button>
               </div>
             `)}
           </div>
