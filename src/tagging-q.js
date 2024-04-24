@@ -20,7 +20,9 @@ export class TaggingQ extends DDD {
     this.draggedFrom = null;
     this.hintText = "Drag and Drop Answer(s)";
     this.answerSet = "default";
-    this.checkedColor = false;
+
+    this.borderTrue = false;
+    this.borderFalse
   }
 
   static get styles() {
@@ -37,8 +39,11 @@ export class TaggingQ extends DDD {
         padding: var(--ddd-spacing-3);
       }
 
-      :host([checkedColor]) .teacher-words {
-        color: blue;
+      :host([borderTrue]) .answers {
+        color: green;
+      }
+      :host([borderFalse]) .answers {
+        color: red;
       }
 
       .question-wrapper {
@@ -103,6 +108,8 @@ export class TaggingQ extends DDD {
         font-family: "Press Start 2P", system-ui;
       }
 
+      .red,
+      .green,
       .teacher-words {
         text-align: left;
         background: transparent;
@@ -191,15 +198,6 @@ export class TaggingQ extends DDD {
         transition: transform .2s linear;
       }
 
-      .correct {
-        color: green;
-      }
-
-      .incorrect {
-        color: red;
-      }
-
-
       .answer-box.hovered,
       .question-box.hovered {
         animation: border-animation .5s infinite linear;
@@ -238,6 +236,13 @@ export class TaggingQ extends DDD {
         background-color: green;
         color: lime;
         box-shadow: 0 .2em #00520e;
+      }
+
+      .green {
+        color: green;
+      }
+      .red {
+        color: red;
       }
 
       .clear-btn:focus,
@@ -288,7 +293,6 @@ export class TaggingQ extends DDD {
       questionBox.addEventListener('dragleave', (e) => this.dragLeave(e));
       questionBox.addEventListener('drop', (e) => this.drop(e, 'question-box'));
     });
-
     this.questionHolder = this.teacherText;
     this.getData();
   }
@@ -387,6 +391,7 @@ export class TaggingQ extends DDD {
       }
     }
     this.hintTextCheck();
+    this.checkRemove();
     this.draggedIndex = null;
     this.draggedFrom = null;
     this.requestUpdate();
@@ -402,6 +407,18 @@ export class TaggingQ extends DDD {
     this.requestUpdate();
   }
 
+  checkRemove() {
+    this.shadowRoot.querySelector('.speech-bubble').innerHTML = `<type-writer class="teacher-words" delay="100" text="${this.teacherText}" erase-speed="15" speed="50"></type-writer>`;
+    this.answers.forEach((ans, index) => {
+      this.answers[index].style.border = 'transparent 5px solid';
+      this.answers[index].style.padding = '0px';
+     });
+     this.questions.forEach((ques, index) => {
+      this.questions[index].style.border = 'transparent 5px solid';
+      this.questions[index].style.padding = '0px';
+     });
+  }
+
   clear() {
 
     const explode = new Audio('https://www.myinstants.com/media/sounds/minecraft-explode1.mp3');
@@ -411,6 +428,8 @@ export class TaggingQ extends DDD {
       this.answers.forEach(answer => {
         this.questions.push(answer);
       });
+
+      this.checkRemove();
 
       this.answers = [];
       this.teacherText = this.questionHolder;
@@ -422,28 +441,40 @@ export class TaggingQ extends DDD {
   }
 
   check() {
-    this.teacherText = ''; 
-    // this.checkedColor = true;
+    this.shadowRoot.querySelector('.speech-bubble').innerHTML = ``;
+    let allCorrect = 0;
   
     this.answers.forEach((ans, index) => {
       const feedback = this.answers[index].dataset.feedback;
-      let colorClass; // Declare colorClass variable outside the if-else block
-  
-      if (this.answers[index].dataset.correct == true) {
-        colorClass = 'correct'; // Set class to correct if feedback is correct
+      const isCorrect = this.answers[index].dataset.correct;
+      this.answers[index].style.border = 'none';
+      
+      if (isCorrect == "true") {
+
+        allCorrect += 1;
+
+        this.answers[index].style.border = 'green 5px solid';
+        this.answers[index].style.borderRadius = '20px';
+        this.answers[index].style.padding = '10px';
+
+        this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="green" delay="100" text="${feedback}" erase-speed="15" speed="50"></type-writer>`
       } else {
-        colorClass = 'incorrect'; // Set class to incorrect if feedback is incorrect
+        this.answers[index].style.border = 'red 5px solid';
+        this.answers[index].style.borderRadius = '20px';
+        this.answers[index].style.padding = '10px';
+
+        this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="red" delay="100" text="${feedback}" erase-speed="15" speed="50"></type-writer>`
       }
-  
-      // Append feedback with the appropriate color class
-      this.teacherText += `<span class="${colorClass}">${feedback}</span>` + '\n';
+
+      this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="green" delay="100" text="" erase-speed="0" speed="0"></type-writer>`
     });
-  
+    
+    if (allCorrect == this.answers.length) {
+      this.makeItRain();
+    }
     this.requestUpdate();
   }
   
-  
-
   render() {
     return html`
     <confetti-container id="confetti">
@@ -499,7 +530,9 @@ export class TaggingQ extends DDD {
         img: { type: String, reflect: true},
         answerSet: { type: String, reflect: true},
         questionHolder: { type: String, reflect: true},
-        checkedColor: { type: Boolean, reflect: true},
+
+        borderFalse: { type: Boolean, reflect: true},
+        borderTrue: { type: Boolean, reflect: true},
     };
   }
 }
