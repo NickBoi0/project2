@@ -44,9 +44,9 @@
       "correct": true,
       "feedback": "The background is purple!"
     },
-    "Has rocketship": {
+    "Has one rocketship": {
       "correct": true,
-      "feedback": "The rocketship is above the moon!"
+      "feedback": "There is one rocketship!"
     },
     "has Earth": {
       "correct": false,
@@ -71,6 +71,14 @@
     "UFO?": {
       "correct": false,
       "feedback": "No signs of alien life!"
+    },
+    "Window on rocket": {
+      "correct": true,
+      "feedback": "There is a window on the rocket!"
+    },
+    "Two fins": {
+      "correct": true,
+      "feedback": "The rocket has two fins"
     }
   }
 }

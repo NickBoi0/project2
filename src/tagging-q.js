@@ -20,9 +20,11 @@ export class TaggingQ extends DDD {
     this.draggedFrom = null;
     this.hintText = "Drag and Drop Answer(s)";
     this.answerSet = "default";
+    this.ramble = "RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE RAMBLE"
 
     this.borderTrue = false;
-    this.borderFalse
+    this.borderFalse = false;
+    this.teacherDance = false;
   }
 
   static get styles() {
@@ -34,16 +36,27 @@ export class TaggingQ extends DDD {
         justify-content: left; 
         align-items: left; 
         background-color: var(--ddd-theme-default-beaverBlue);
-        border: var(--ddd-theme-default-nittanyNavy) 20px solid;
+        border: var(--ddd-theme-default-nittanyNavy) var(--ddd-spacing-5) solid;
         border-bottom: transparent;
         padding: var(--ddd-spacing-3);
       }
 
       :host([borderTrue]) .answers {
-        color: green;
+        color: var(--ddd-theme-default-forestGreen);
       }
       :host([borderFalse]) .answers {
-        color: red;
+        color: var(--ddd-theme-default-error);
+      }
+      :host([teacherDance]) .teacher {
+        animation: jump .5s infinite linear;
+      }
+
+      .ramble-text {
+        color: var(--ddd-theme-default-slateMaxLight);
+        text-align: center;
+        font-family: "Press Start 2P", system-ui;
+        font-size: 1em;
+        padding: var(--ddd-spacing-3);
       }
 
       .question-wrapper {
@@ -55,8 +68,8 @@ export class TaggingQ extends DDD {
       .question-img {
         max-width: 500px;
         max-height: 400px;
-        border: black 5px solid;
-        border-radius: 8px;
+        border: var(--ddd-theme-default-coalyGray) var(--ddd-spacing-1) solid;
+        border-radius: var(--ddd-spacing-2);
         margin-bottom: var(--ddd-spacing-3);
       }
 
@@ -69,8 +82,8 @@ export class TaggingQ extends DDD {
 
       .speech-bubble {
         position: relative;
-        background-color: white;
-        border-radius: 10px;
+        background-color: var(--ddd-theme-default-slateMaxLight);
+        border-radius: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-2);
 
         width: 600px;
@@ -80,17 +93,17 @@ export class TaggingQ extends DDD {
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-width: thick;
-        scrollbar-color: black lightgrey;
+        scrollbar-color: var(--ddd-theme-default-coalyGray) var(--ddd-theme-default-limestoneLight);
     }
 
       .bubble-point {
-        margin-top: 20px;
+        margin-top: var(--ddd-spacing-5);
         width: 0; 
         height: 0; 
-        border-top: 60px solid transparent;
-        border-bottom: 60px solid transparent;
+        border-top: var(--ddd-spacing-15) solid transparent;
+        border-bottom: var(--ddd-spacing-15) solid transparent;
         
-        border-left: 60px solid white;
+        border-left: var(--ddd-spacing-15) solid var(--ddd-theme-default-slateMaxLight);
       }
 
       .character-wrapper {
@@ -103,8 +116,8 @@ export class TaggingQ extends DDD {
         text-align: left;
         background: transparent;
         border: transparent;
-        color: white;
-        font-size: 30px;
+        color: var(--ddd-theme-default-potential0);
+        font-size: 2em;
         font-family: "Press Start 2P", system-ui;
       }
 
@@ -115,8 +128,8 @@ export class TaggingQ extends DDD {
         background: transparent;
         border: transparent;
         font-family: "Press Start 2P", system-ui;
-        color: black;
-        font-size: 25px;
+        color: var(--ddd-theme-default-coalyGray);
+        font-size: 1.2em;
       }
 
       .answer-section {
@@ -125,10 +138,14 @@ export class TaggingQ extends DDD {
 
       .question-box,
       .answer-box {
-        font-size: 30px;
+        font-size: 1.5em;
         font-family: "Press Start 2P", system-ui;
+        
         overflow-wrap: break-word;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thick;
+        scrollbar-color: var(--ddd-theme-default-coalyGray) var(--ddd-theme-default-limestoneLight);
 
         margin: var(--ddd-spacing-3);
         padding: var(--ddd-spacing-4);
@@ -155,6 +172,8 @@ export class TaggingQ extends DDD {
         background-color: var(--ddd-theme-default-futureLime);
                     
         background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+
+        /* Cant use DDD for sizing here, has to be exact numbers */
         background-size: 50px 15px, 50px 15px, 15px 50px, 15px 50px;
         background-position: left top, right bottom, left bottom, right top;
       }
@@ -177,6 +196,8 @@ export class TaggingQ extends DDD {
         background-color: var(--ddd-theme-default-roarGolden);
 
         background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+
+        /* Cant use DDD for sizing here, has to be exact numbers */
         background-size: 50px 15px, 50px 15px, 15px 50px, 15px 50px;
         background-position: left top, right bottom, left bottom, right top;
       }
@@ -189,10 +210,10 @@ export class TaggingQ extends DDD {
       .answers,
       .choices {
         font-family: "Press Start 2P", system-ui;
-        font-size: 20px;
-        background-color: black;
+        font-size: .75em;
+        background-color: var(--ddd-theme-default-coalyGray);
         padding: var(--ddd-spacing-1);
-        border: white 5px solid;
+        border: white var(--ddd-spacing-1) solid;
         color: white;
 
         transition: transform .2s linear;
@@ -207,7 +228,7 @@ export class TaggingQ extends DDD {
       .answers:hover,
       .choices:focus,
       .choices:hover{
-        transform: rotate(5deg);
+        animation: choice-animation 1s 1 ease;
         cursor: pointer;
       }
 
@@ -218,31 +239,31 @@ export class TaggingQ extends DDD {
         margin: var(--ddd-spacing-1);
         font-weight: bold;
         padding: var(--ddd-spacing-5);
-        text-shadow: -1px -1px black, 1px 1px black;
+        text-shadow: -1px -1px var(--ddd-theme-default-coalyGray), 1px 1px var(--ddd-theme-default-coalyGray);
 
         border-radius: var(--ddd-spacing-2);
         cursor: pointer;
 
-        transition: background-color .2s linear;
+        transition: background-color .3s linear;
       }
 
       .clear-btn {
         background-color: #941400;
         color: red;
-        box-shadow: 0 .2em #4a0a00; 
+        box-shadow: 0 6px #4a0a00; 
       }
 
       .check-btn {
         background-color: green;
         color: lime;
-        box-shadow: 0 .2em #00520e;
+        box-shadow: 0 6px #00520e;
       }
 
       .green {
-        color: green;
+        color: var(--ddd-theme-default-forestGreen);
       }
       .red {
-        color: red;
+        color: var(--ddd-theme-default-error);
       }
 
       .clear-btn:focus,
@@ -261,6 +282,7 @@ export class TaggingQ extends DDD {
         top: .2em;
       }
 
+      /* Makes the dashed border around question and answer box move, will be faster when a chocie is dragged over them */
       @keyframes border-animation {
         0% {
           background-position: left top, right bottom, left bottom, right top;
@@ -270,9 +292,89 @@ export class TaggingQ extends DDD {
         }
       }
 
+      /* Makes each choice wiggle when hovered */
+      @keyframes choice-animation {
+        0%, 100% {
+          transform: rotate(0);
+        }
+        33% {
+          transform: rotate(-2deg);
+        }
+        66% {
+          transform: rotate(2deg);
+        }
+      }
+
+      /* Makes the teacher jump when you answer correctly */
+      @keyframes jump {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* makes sizing work for smaller window */
+      @media screen and (max-width: 1250px) {
+        :host {
+          display: block;
+          flex-direction: column;
+        }
+        .question-wrapper {
+          display: block;
+          flex-direction: column;
+        }
+        .question-img {
+          order: 1;
+          margin-bottom: var(--ddd-spacing-3);
+        }
+        .teacher-wrapper {
+          order: 2;
+        }
+        .teacher-words {
+          font-size: 1.25em; 
+        }
+        .question-box,
+        .answer-box {
+          width: 100%; 
+          font-size: 1.25em; 
+        }
+        .question-box {
+          width: auto;
+        }
+        .question-img {
+          max-width: 100%; 
+        }
+        .ramble-text {
+          font-size: .75em;
+        }
+        
+      }
+
+      /* Makes sizing work for mobile */
+      @media screen and (max-width: 500px) {
+        :host {
+          padding: var(--ddd-spacing-1); 
+        }
+        .question-box,
+        .answer-box,
+        .teacher-words {
+          font-size: 1em; 
+        }
+        .question-img {
+          max-width: 100%;
+          max-height: auto;
+        }
+        .ramble-text {
+          font-size: .65em;
+        }
+      }
+
     `;
   }
 
+  //Creates all the drag and drop events
   firstUpdated() {
     super.firstUpdated();
     const answerBoxes = this.shadowRoot.querySelectorAll('.answer-box');
@@ -297,6 +399,7 @@ export class TaggingQ extends DDD {
     this.getData();
   }
 
+  //Fetches the data from questions.json and puts them in this.questions (the list in question box)
   getData() {
 
     fetch('src/questions.json')
@@ -323,6 +426,7 @@ export class TaggingQ extends DDD {
     });
   }
 
+  //Shuffles all the questions randomly
   shuffle() {
     for (let i = this.questions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -330,6 +434,7 @@ export class TaggingQ extends DDD {
     }
   }
   
+  //Spawns confetti when you answer correctly
   makeItRain() {
 
     const success = new Audio('https://hax.psu.edu/cdn/1.x.x/build/es6/node_modules/@lrnwebcomponents/app-hax/lib/assets/sounds/success.mp3');
@@ -344,45 +449,57 @@ export class TaggingQ extends DDD {
     );
   }
 
+  //Tests if a spot on the screen is droppable
   dragOver(e) {
     e.preventDefault();
   }
 
+  //Gets the index of the dragged choice and which box it came from on the start of a drag
   dragStart(e) {
-    this.draggedIndex = parseInt(e.target.dataset.index);
+    this.draggedIndex = e.target.dataset.index;
     this.draggedFrom = e.target.dataset.origin;
 
     const click = new Audio('https://hax.psu.edu/cdn/1.x.x/build/es6/node_modules/@lrnwebcomponents/app-hax/lib/assets/sounds/coin.mp3');
     click.play();
   }
 
+  //When entering question or answer box, make the borders move faster
   dragEnter(e) {
     e.preventDefault();
     e.target.classList.add('hovered');
   }
 
+  //When leaving question or answer box, remove the fast animation
   dragLeave(e) {
     e.target.classList.remove('hovered');
   }
 
+  //Drops a choice into a box
   drop(e, target, index, from) {
     e.preventDefault();
 
-    if (this.draggedIndex == null && this.draggedFrom == null) {
-      this.draggedIndex = index;
+    //if this vals are null, set them to index and from (this is for pressing the buttons instead of drag and drop)
+    if (this.draggedFrom == null || this.draggedIndex == null) {
       this.draggedFrom = from;
+      this.draggedIndex = index;
     }
     
     const bading = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_2d39932aa9.mp3');
 
+    //Removes fast border animation
     e.target.classList.remove('hovered');
 
+    //If you are dropping in answer box, and the choice is not already in answer box then
+    //drop the choice, remove it from question list and push it to answer list
     if (target === 'answer-box') {
       if (this.draggedFrom != 'answer-box') {
         this.answers.push(this.questions[this.draggedIndex]);
         this.questions.splice(this.draggedIndex, 1);
         bading.play();
       }
+
+    //If you are dropping in question box, and the choice is not already in question box then
+    //drop the choice, remove it from answer list and push it to question list
     } else if (target === 'question-box') {
       if (this.draggedFrom != 'question-box') {
         this.questions.push(this.answers[this.draggedIndex]);
@@ -391,12 +508,16 @@ export class TaggingQ extends DDD {
       }
     }
     this.hintTextCheck();
+
     this.checkRemove();
     this.draggedIndex = null;
     this.draggedFrom = null;
+
     this.requestUpdate();
   }
 
+  //If there is a choice in answer list, remove the hint text
+  //and add it back if there are no choices in answer list
   hintTextCheck() {
     if (this.answers == '') {
       this.hintText = "Drag and Drop Answer(s)";
@@ -407,7 +528,13 @@ export class TaggingQ extends DDD {
     this.requestUpdate();
   }
 
+  //Removes the feedback and colored borders if there is an update after you check your answers
   checkRemove() {
+
+    if (this.teacherText != this.questionHolder) {
+      this.teacherText = this.questionHolder;
+    }
+
     this.shadowRoot.querySelector('.speech-bubble').innerHTML = `<type-writer class="teacher-words" delay="100" text="${this.teacherText}" erase-speed="15" speed="50"></type-writer>`;
     this.answers.forEach((ans, index) => {
       this.answers[index].style.border = 'transparent 5px solid';
@@ -417,10 +544,12 @@ export class TaggingQ extends DDD {
       this.questions[index].style.border = 'transparent 5px solid';
       this.questions[index].style.padding = '0px';
      });
+
+     this.teacherDance = false;
   }
 
+  //Removes all chocies in answer box and puts them in question box
   clear() {
-
     const explode = new Audio('https://www.myinstants.com/media/sounds/minecraft-explode1.mp3');
 
     if (this.answers != '') {
@@ -429,56 +558,73 @@ export class TaggingQ extends DDD {
         this.questions.push(answer);
       });
 
-      this.checkRemove();
-
       this.answers = [];
-      this.teacherText = this.questionHolder;
+
       explode.play();
+      this.checkRemove();
       
+    } else {
+      const error = new Audio('https://www.myinstants.com/media/sounds/error_CDOxCYm.mp3');
+      error.play();
     }
     this.shuffle();
+    this.hintTextCheck();
     this.requestUpdate();
   }
 
+  //Checks if the answers you have in answer box are correct
   check() {
-    this.shadowRoot.querySelector('.speech-bubble').innerHTML = ``;
-    let allCorrect = 0;
-  
-    this.answers.forEach((ans, index) => {
-      const feedback = this.answers[index].dataset.feedback;
-      const isCorrect = this.answers[index].dataset.correct;
-      this.answers[index].style.border = 'none';
+    if (this.answers != '') {
+      this.shadowRoot.querySelector('.speech-bubble').innerHTML = ``;
+      this.teacherText = '';
+      let allCorrect = 0;
       
-      if (isCorrect == "true") {
+      //Gets the feedback and correct data from each answer
+      this.answers.forEach((ans, index) => {
+        const feedback = this.answers[index].dataset.feedback;
+        const isCorrect = this.answers[index].dataset.correct;
+        this.answers[index].style.border = 'none';
+        
+        //if the answer is correct, give it a green circle and show the feedback as green
+        if (isCorrect == "true") {
 
-        allCorrect += 1;
+          allCorrect += 1;
 
-        this.answers[index].style.border = 'green 5px solid';
-        this.answers[index].style.borderRadius = '20px';
-        this.answers[index].style.padding = '10px';
+          this.answers[index].style.border = 'green 5px solid';
+          this.answers[index].style.borderRadius = '20px';
+          this.answers[index].style.padding = '10px';
 
-        this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="green" delay="100" text="${feedback}" erase-speed="15" speed="50"></type-writer>`
+          this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="green" delay="100" text="-${feedback}" erase-speed="15" speed="50"></type-writer>`
+        
+        //if the answer is wrong, give it a red circle and show the feedback as red
+        } else {
+          this.answers[index].style.border = 'red 5px solid';
+          this.answers[index].style.borderRadius = '20px';
+          this.answers[index].style.padding = '10px';
+
+          this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="red" delay="100" text="-${feedback}" erase-speed="15" speed="50"></type-writer>`
+        }
+      });
+      
+      //If every answer in answer box is correct, make the teacher dance and spawn confetti
+      if (allCorrect == this.answers.length) {
+        this.makeItRain();
+        this.teacherDance = true;
+        
       } else {
-        this.answers[index].style.border = 'red 5px solid';
-        this.answers[index].style.borderRadius = '20px';
-        this.answers[index].style.padding = '10px';
-
-        this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="red" delay="100" text="${feedback}" erase-speed="15" speed="50"></type-writer>`
+        const error = new Audio('https://www.myinstants.com/media/sounds/error_CDOxCYm.mp3');
+        error.play();
       }
-
-      this.shadowRoot.querySelector('.speech-bubble').innerHTML += `<type-writer class="green" delay="100" text="" erase-speed="0" speed="0"></type-writer>`
-    });
-    
-    if (allCorrect == this.answers.length) {
-      this.makeItRain();
     }
     this.requestUpdate();
   }
   
+  //Super fun HTML
   render() {
     return html`
     <confetti-container id="confetti">
         <div class="project2">
+          <div class="ramble-text">${this.ramble}</div>
           <div class="question-wrapper">
             <img class="question-img" src="${this.img}" alt="Image that relates to the question">
             <div class="teacher-wrapper">
@@ -487,7 +633,7 @@ export class TaggingQ extends DDD {
               </div>
               <div class="bubble-point"></div>
               <div class="character-wrapper">
-                <rpg-character seed="zpg"></rpg-character>
+                <rpg-character class="teacher" seed="zpg"></rpg-character>
               </div>
             </div>
           </div>
@@ -530,9 +676,11 @@ export class TaggingQ extends DDD {
         img: { type: String, reflect: true},
         answerSet: { type: String, reflect: true},
         questionHolder: { type: String, reflect: true},
-
+        ramble: { type: String, reflect: true},
+        
         borderFalse: { type: Boolean, reflect: true},
         borderTrue: { type: Boolean, reflect: true},
+        teacherDance: { type: Boolean, reflect: true},
     };
   }
 }
